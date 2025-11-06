@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор промтов для мотивационного задания</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Светло-серый фон */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        .container-card {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            background-image: linear-gradient(to bottom right, #ffffff, #f9fafb); /* Легкий градиент на фоне карточки */
+            position: relative;
+            overflow: hidden;
+        }
+        .decorative-element-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #2563eb; /* Синяя полоса */
+            opacity: 0.1;
+            z-index: 0;
+        }
+        .decorative-element-bottom {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background-color: #2563eb; /* Синий квадрат */
+            opacity: 0.05;
+            border-radius: 0.75rem 0 0.75rem 0;
+            transform: rotate(45deg);
+            z-index: 0;
+        }
+        .field-label {
+            display: block;
+            text-lg: 1.125rem; /* 18px */
+            font-weight: 500;
+            color: #4b5563; /* Оттенок серого */
+            margin-bottom: 0.5rem; /* 8px */
+        }
+        .input-field {
+            width: 100%;
+            padding: 0.75rem; /* 12px */
+            border: 1px solid #d1d5db; /* Светло-серый бордер */
+            border-radius: 0.5rem; /* 8px */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* Легкая тень */
+            transition: all 0.2s ease-in-out;
+            background-color: #ffffff;
+        }
+        .input-field:focus {
+            border-color: #3b82f6; /* Синий фокус */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); /* Кольцо фокуса */
+            outline: none;
+        }
+        
+        /* Стили для placeholder и дефолтных значений - КУРСИВ И СЕРЫЙ */
+        .subtle-input {
+            font-style: italic;
+            color: #9ca3af; /* Светло-серый */
+        }
+        .subtle-input::placeholder {
+            color: #9ca3af;
+            font-style: italic;
+        }
+        .prompt-output::placeholder {
+            color: #9ca3af;
+            font-style: italic;
+        }
+        /* /Стили для placeholder и дефолтных значений */
+
+        .button-primary {
+            width: 100%;
+            padding: 0.875rem 1.5rem; /* 14px 24px */
+            font-size: 1.125rem; /* 18px */
+            font-weight: 600;
+            color: #ffffff;
+            background-color: #2563eb; /* Синий */
+            border-radius: 0.75rem; /* 12px */
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .button-primary:hover {
+            background-color: #1d4ed8; /* Темнее синий */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px -2px rgba(0, 0, 0, 0.15), 0 3px 6px -2px rgba(0, 0, 0, 0.08);
+        }
+        .button-primary:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.4);
+        }
+        .prompt-output {
+            background-color: #e0f2fe; /* Очень светло-синий */
+            border: 1px solid #90cdf4; /* Светло-голубой бордер */
+            border-radius: 0.5rem;
+            color: #1e3a8a; /* Темно-синий текст */
+        }
+        .hint-box {
+            background-color: #fffbeb; /* Очень светло-желтый */
+            border: 1px solid #fcd34d; /* Светло-желтый бордер */
+            color: #92400e; /* Темно-оранжевый текст */
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #2563eb, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .icon-small {
+            width: 24px;
+            height: 24px;
+            color: #2563eb;
+        }
+
+        /* Анимация для заголовка */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fadeInDown {
+            animation: fadeInDown 0.8s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-xl container-card relative overflow-hidden z-10">
+
+        <!-- Декоративные элементы --><div class="decorative-element-top"></div>
+        <div class="decorative-element-bottom"></div>
+
+        <!-- Заголовок --><h1 class="text-3xl md:text-4xl font-extrabold text-blue-700 mb-8 flex items-center justify-center relative z-10 animate-fadeInDown">
+            <svg class="w-10 h-10 mr-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18s-3.332.477-4.5 1.253"></path></svg>
+            <span class="gradient-text">Генератор промтов для мотивационного задания</span>
+        </h1>
+        
+        <div class="space-y-6 relative z-10 pt-4">
+
+            <!-- Предмет --><div>
+                <label for="subject" class="field-label">📚 Предмет:</label>
+                <select id="subject" class="input-field"> 
+                    <option value="Математика">Математика</option>
+                    <option value="Русский язык">Русский язык</option>
+                    <option value="История">История</option>
+                    <option value="Физика" selected>Физика</option>
+                    <option value="Химия">Химия</option>
+                    <option value="Биология">Биология</option>
+                    <option value="География">География</option>
+                    <option value="Иностранный язык (Английский)">Иностранный язык (Английский)</option>
+                    <option value="Литература">Литература</option>
+                    <option value="Обществознание">Обществознание</option>
+                    <option value="ИЗО">ИЗО</option>
+                    <option value="Музыка">Музыка</option>
+                    <option value="Технология">Технология</option>
+                </select>
+            </div>
+
+            <!-- Класс --><div>
+                <label for="grade" class="field-label">🎓 Класс:</label>
+                <select id="grade" class="input-field">
+                    <!-- Заполняем классы от 1 до 11 --><script>
+                        const gradeSelect = document.getElementById('grade');
+                        for (let i = 1; i <= 11; i++) {
+                            const option = document.createElement('option');
+                            option.value = i;
+                            option.textContent = i;
+                            if (i === 7) { // Установим 7 класс по умолчанию
+                                option.selected = true;
+                            }
+                            gradeSelect.appendChild(option);
+                        }
+                    </script>
+                </select>
+            </div>
+
+            <!-- Тема урока --><div>
+                <label for="topic" class="field-label">💡 Тема урока:</label>
+                <input type="text" id="topic" value="Законы Ньютона" placeholder="Например: Законы Ньютона" class="input-field subtle-input">
+            </div>
+
+            <!-- Цель начала урока - ПРЕВРАЩЕН В ВЫПАДАЮЩИЙ СПИСОК --><div>
+                <label for="goal" class="field-label">🎯 Цель начала урока:</label>
+                <select id="goal" class="input-field subtle-input">
+                    <!-- Начальный плейсхолдер -->
+                    <option value="" disabled selected class="text-gray-400">ВЫБЕРИ</option>
+                    <option value="удивить">Удивить</option>
+                    <option value="визуально впечатлить">Визуально впечатлить</option>
+                    <option value="вызвать эмоцию">Вызвать эмоцию</option>
+                    <option value="заинтриговать">Заинтриговать</option>
+                    <option value="интерес через ассоциацию">Интерес через ассоциацию</option>
+                    <option value="задать провокационный вопрос">Задать провокационный вопрос</option>
+                    <option value="столкнуть знание с незнанием">Столкнуть знание с незнанием</option>
+                    <option value="создать любопытство">Создать любопытство</option>
+                    <option value="мотивировать через вызов">Мотивировать через вызов</option>
+                </select>
+            </div>
+
+            <!-- Формат ответа - ОБНОВЛЕННЫЙ СПИСОК --><div>
+                <label for="format" class="field-label">💬 Формат ответа:</label>
+                <select id="format" class="input-field subtle-input">
+                    <!-- Начальный плейсхолдер -->
+                    <option value="" disabled selected class="text-gray-400">ВЫБЕРИ</option>
+                    <!-- ОБНОВЛЕННЫЙ СПИСОК -->
+                    <option value="Удивительный факт">Удивительный факт</option>
+                    <option value="Эмоциональная история или анекдот">Эмоциональная история или анекдот</option>
+                    <option value="Проблемный вопрос">Проблемный вопрос</option>
+                    <option value="Цитата или афоризм">Цитата или афоризм</option>
+                    <option value="Короткое стихотворение или рифмовка">Короткое стихотворение или рифмовка</option>
+                    <option value="Сценарий видеоролика">Сценарий видеоролика</option>
+                    <option value="Описание мема">Описание мема</option>
+                    <option value="Личный вызов или загадка">Личный вызов или загадка</option>
+                    <option value="Жизненная (практическая) ситуация">Жизненная (практическая) ситуация</option>
+                    <option value="Текст для аудио">Текст для аудио</option>
+                    <option value="На свое усмотрение">На свое усмотрение</option> <!-- Добавленный пункт -->
+                </select>
+            </div>
+            
+            <!-- Количество вариантов для генерации - НОВОЕ ПОЛЕ -->
+            <div>
+                <label for="count" class="field-label">🔢 Количество вариантов для генерации:</label>
+                <select id="count" class="input-field">
+                    <option value="1" selected>1 вариант</option>
+                    <option value="2">2 варианта</option>
+                    <option value="3">3 варианта</option>
+                    <option value="4">4 варианта</option>
+                    <option value="5">5 вариантов</option>
+                </select>
+            </div>
+
+            <!-- Кнопка генерации --><button id="generate-button" class="button-primary flex items-center justify-center gap-2">
+                <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Сгенерировать промт
+            </button>
+
+            <!-- Поле для вывода промта --><div id="prompt-output-container" class="mt-8 pt-6 border-t border-gray-200">
+                <h2 class="text-xl font-bold text-gray-800 mb-3 flex items-center gap-2">
+                    <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h10M7 16h10M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V7.414a1 1 0 00-.293-.707L15.707 3.293A1 1 0 0015 3h-1z"></path></svg>
+                    🤖 Сгенерированный промт для нейросети:
+                </h2>
+                <textarea id="output-prompt" rows="8" readonly class="input-field prompt-output text-base resize-none" placeholder="Здесь будет отображаться готовый промт после нажатия кнопки..."></textarea>
+            </div>
+            
+            <div class="text-sm p-3 rounded-lg hint-box flex items-start gap-2 relative z-10">
+                <svg class="icon-small flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <p>
+                    **ℹ️ Инструкция:** Скопируйте текст из поля выше и вставьте его в вашу любимую нейросеть (ChatGPT, Gemini, GigaChat и т.д.) для генерации контента для начала урока.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('generate-button').addEventListener('click', generatePrompt);
+
+        /**
+         * Генерирует итоговый промт на основе данных из формы.
+         * Также отключает курсив и серый цвет после ввода данных.
+         */
+        function generatePrompt() {
+            const subject = document.getElementById('subject').value;
+            const grade = document.getElementById('grade').value;
+            const topic = document.getElementById('topic').value.trim();
+            const goal = document.getElementById('goal').value.trim();
+            const format = document.getElementById('format').value.trim(); 
+            const count = document.getElementById('count').value; // Получаем количество вариантов
+
+            const outputTextarea = document.getElementById('output-prompt');
+
+            // --- ОБНОВЛЕННАЯ ВАЛИДАЦИЯ ---
+            if (!topic || !goal || !format) {
+                let errorMessage = "Ошибка: Пожалуйста, заполните все обязательные поля:";
+                if (!topic) errorMessage += " 'Тема урока',";
+                if (!goal) errorMessage += " 'Цель начала урока',";
+                if (!format) errorMessage += " 'Формат ответа',"; 
+
+                // Убираем лишнюю запятую и завершаем точку
+                errorMessage = errorMessage.replace(/,$/, '').trim() + "."; 
+
+                outputTextarea.value = errorMessage;
+                outputTextarea.classList.remove('prompt-output');
+                outputTextarea.classList.add('bg-red-100', 'border-red-400', 'text-red-800');
+                return;
+            }
+
+            // Восстанавливаем стиль вывода
+            outputTextarea.classList.remove('bg-red-100', 'border-red-400', 'text-red-800');
+            outputTextarea.classList.add('prompt-output');
+
+            // 1. Определяем роль нейросети (Системный промт или основная инструкция)
+            const roleInstruction = `Ты — опытный и креативный учитель-методист с глубоким знанием предмета.`;
+
+            // 2. Формируем основную задачу
+            const mainTask = `Твоя задача — создать убедительный и увлекательный контент для самого начала урока.`;
+
+            // 3. Формируем контекст
+            const contextDetails = [
+                `Предмет: ${subject}`,
+                `Класс: ${grade}`,
+                `Тема урока: ${topic}`,
+                `Целевое назначение: ${goal}`,
+                `Требуемый формат: ${format}`,
+            ];
+
+            // 4. Формируем ограничения - ОБНОВЛЕНИЕ С УЧЕТОМ КОЛИЧЕСТВА ВАРИАНТОВ
+            const constraints = `Сгенерируй ${count} разных варианта. Каждый вариант должен быть кратким (не более 200 слов), максимально привлекающим внимание и четко нацелен на выполнение указанного целевого назначения. Начни сразу с контента, без лишних вступлений и объяснений. Раздели каждый вариант пустой строкой.`;
+
+            // Объединяем все части в итоговый промт
+            const finalPrompt = 
+`${roleInstruction}
+${mainTask}
+Используй следующий контекст:
+${contextDetails.map(d => `- ${d}`).join('\n')}
+
+${constraints}`;
+            
+            outputTextarea.value = finalPrompt;
+
+            // Добавляем краткое сообщение о копировании для удобства пользователя
+            const generateButton = document.getElementById('generate-button');
+            const originalButtonContent = generateButton.innerHTML; // Сохраняем весь HTML контент, включая SVG
+            
+            generateButton.innerHTML = `<svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M17 16V9a2 2 0 00-2-2H9a2 2 0 00-2 2v7m10-7l-4-4"></path></svg> Промт сгенерирован!`;
+            
+            setTimeout(() => {
+                generateButton.innerHTML = originalButtonContent;
+            }, 3000);
+        }
+        
+        /**
+         * Добавляем слушатели событий для ввода, чтобы убрать курсив и серый цвет,
+         * когда пользователь начинает вводить свои данные, и установить черный цвет.
+         */
+        document.querySelectorAll('.subtle-input').forEach(element => {
+            // Устанавливаем черный цвет для не-output полей, чтобы удовлетворить требование пользователя.
+            const defaultColor = element.classList.contains('prompt-output') ? '#1e3a8a' : '#000000'; 
+            
+            const removeSubtleStyle = (e) => {
+                // Если элемент - input/textarea, проверяем, что значение не пустое
+                if ((e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') && e.target.value.trim() !== '') {
+                    e.target.classList.remove('subtle-input');
+                    e.target.style.color = defaultColor; 
+                } 
+                // Если элемент - select, проверяем, что выбрана не дефолтная опция 
+                else if (e.target.tagName === 'SELECT' && e.target.value.trim() !== '') {
+                    e.target.classList.remove('subtle-input');
+                    e.target.style.color = defaultColor; 
+                }
+            };
+            
+            const addSubtleStyle = (e) => {
+                 // Если элемент - input/textarea, и значение совпадает с дефолтным или пусто
+                const isDefaultValue = (e.target.id === 'topic' && e.target.value === 'Законы Ньютона'); 
+                
+                if (e.target.tagName === 'SELECT' && e.target.value.trim() === '') {
+                    // Для select возвращаем subtle, только если выбрано пустое значение (ВЫБЕРИ)
+                    e.target.classList.add('subtle-input');
+                    e.target.style.color = ''; // Возвращаем к стилю CSS
+                } else if (e.target.tagName === 'SELECT' && e.target.value.trim() !== '') {
+                    // Для select, если выбрано значение, оставляем черный цвет
+                    e.target.classList.remove('subtle-input');
+                    e.target.style.color = defaultColor;
+                } else if (e.target.value.trim() === '' || isDefaultValue) {
+                    e.target.classList.add('subtle-input');
+                    e.target.style.color = ''; // Возвращаем к стилю CSS
+                }
+            };
+
+            element.addEventListener('input', removeSubtleStyle);
+            element.addEventListener('change', removeSubtleStyle);
+            element.addEventListener('blur', addSubtleStyle);
+            element.addEventListener('focus', removeSubtleStyle); // Убираем subtle при фокусе
+        });
+    </script>
+</body>
+</html>
